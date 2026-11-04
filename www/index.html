@@ -3,246 +3,255 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Fortnite Chest Tracker</title>
+<title>Chest Tracker</title>
 <style>
 :root{--bg:#0b0d1a;--surface:#151833;--surface2:#1d2145;--line:#2b3066;--text:#eef0ff;--muted:#9aa0cf;--blue:#3fa9ff;--purple:#8b5cf6;--yellow:#ffd23f;--danger:#ff5d73;color-scheme:dark;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*,*::before,*::after{box-sizing:inherit}
-body{margin:0;background:radial-gradient(circle at 20% -10%,#262a6b 0,transparent 45%),var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;min-height:100vh}
-main{max-width:860px;margin:0 auto;padding:20px 16px 48px}
-header{text-align:center;margin-bottom:20px}
-h1{margin:0;font-size:clamp(1.6rem,6vw,2.4rem);font-weight:900;letter-spacing:.06em;font-style:italic;background:linear-gradient(90deg,var(--blue),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
-header p{margin:4px 0 0;color:var(--muted)}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
-.stat{text-align:center}
-.stat span{display:block;color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.06em}
-.stat b{display:block;font-size:clamp(1.5rem,6vw,2.1rem);margin-top:4px;color:var(--yellow)}
-.counter{text-align:center;margin-bottom:16px;border-top:3px solid var(--purple)}
-.counter h2{margin:0;font-size:1rem;color:var(--blue);letter-spacing:.08em;text-transform:uppercase}
-#big{font-size:clamp(4rem,22vw,7rem);font-weight:900;line-height:1.1;margin:6px 0 10px}
-.row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
-button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface2);color:var(--text);border-radius:10px;padding:10px 16px;font-weight:700;transition:transform .08s,filter .15s}
-button:hover{filter:brightness(1.2)}button:active{transform:scale(.96)}
-.inc{flex:1 1 70px;max-width:130px;font-size:1.2rem;padding:14px 0;background:linear-gradient(135deg,#2563eb,var(--purple));border:0}
-.manual input{width:120px;font:inherit;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);text-align:center}
-.primary{background:var(--yellow);color:#1a1500;border:0;width:100%;padding:14px;font-size:1.05rem;margin-top:4px}
-.ghost{font-size:.85rem;padding:8px 12px;color:var(--muted)}
+*,*::before,*::after{box-sizing:inherit;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:radial-gradient(circle at 15% -10%,#262a6b 0,transparent 45%),var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
+#app{height:100%;min-height:560px;max-width:520px;margin:0 auto;padding:10px 12px 12px;display:flex;flex-direction:column;gap:10px}
+button{font:inherit;color:var(--text);cursor:pointer;border:1px solid var(--line);background:var(--surface2);border-radius:12px;font-weight:700;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+button:active{filter:brightness(1.35)}
+.top{display:flex;justify-content:space-between;align-items:center}
+h1{margin:0;font-size:1.25rem;font-weight:900;letter-spacing:.08em;font-style:italic;background:linear-gradient(90deg,var(--blue),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+.who{color:var(--muted);font-size:.85rem}.who b{color:var(--yellow)}
+.small{padding:7px 11px;font-size:.8rem;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px;text-align:center}
+.stat span{display:block;color:var(--muted);font-size:.65rem;text-transform:uppercase;letter-spacing:.05em}
+.stat b{font-size:1.4rem;color:var(--blue)}
+.now{text-align:center;border-top:3px solid var(--purple);background:var(--surface);border-radius:12px;padding:6px 0 2px}
+.now small{display:block;color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em}
+#cur{font-size:clamp(4.5rem,24vw,7.5rem);font-weight:900;line-height:1;color:var(--yellow)}
+#timer{color:var(--muted);font-size:.9rem;font-variant-numeric:tabular-nums}
+#add{flex:1;min-height:150px;font-size:clamp(1.6rem,8vw,2.4rem);font-weight:900;letter-spacing:.04em;border:0;border-radius:20px;color:#1a1500;background:linear-gradient(160deg,#ffe066,var(--yellow) 55%,#ffb800);box-shadow:0 6px 0 #a67c00}
+#add:active{transform:translateY(4px);box-shadow:0 2px 0 #a67c00;filter:none}
+.aux{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.aux button{padding:14px 0;font-size:1rem}
+.foot{display:grid;grid-template-columns:1fr auto;gap:8px}
+#fin{padding:16px;font-size:1.05rem;border:0;background:linear-gradient(135deg,#2563eb,var(--purple))}
+#openHist{padding:0 18px}
+.ovl{position:fixed;inset:0;display:none;z-index:20;padding:16px;background:rgba(5,6,16,.78);align-items:center;justify-content:center}
+.ovl.on{display:flex}
+#login{background:var(--bg);z-index:30}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;width:100%;max-width:380px}
+.box h3{margin:0 0 8px}.box p{margin:0 0 12px;color:var(--muted);font-size:.9rem}
+.box input,.box textarea{width:100%;font:inherit;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);margin-bottom:10px}
+.row{display:flex;gap:8px;justify-content:flex-end}.row button{padding:10px 16px}
+.go{background:var(--yellow);color:#1a1500;border:0;width:100%;padding:13px}
+#lErr{color:var(--danger);min-height:1.2em;font-size:.85rem;margin-bottom:6px}
+#hist{align-items:stretch;padding:0;background:var(--bg);z-index:15;padding-top:env(safe-area-inset-top,0px)}
+.sheet{width:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;padding:12px;height:100%}
+.sheet header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.sheet h2{margin:0;font-size:1.1rem}
+#list{flex:1;overflow-y:auto}
+.item{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px}
+.item .n{color:var(--blue);font-weight:900;min-width:40px}
+.item .c{flex:1}.item .c b{color:var(--yellow);font-size:1.15rem}
+.item .c div{color:var(--muted);font-size:.75rem}
+.item button{padding:8px 11px}
+.empty{text-align:center;color:var(--muted);padding:30px}
+.tools{border-top:1px solid var(--line);padding-top:10px;margin-top:4px}
+.tools textarea{height:70px;font-size:.75rem}
+.tools .row{justify-content:stretch;flex-wrap:wrap}.tools .row button{flex:1;font-size:.85rem;padding:10px 6px}
 .danger{color:var(--danger);border-color:#5a2433}
-.hist-head{display:flex;justify-content:space-between;align-items:center;margin:20px 0 10px;gap:8px}
-.hist-head h2{margin:0;font-size:1.1rem}
-.wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:520px}
-th,td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
-th{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}
-td.n{font-weight:800;color:var(--blue)}td.t{font-weight:800;color:var(--yellow)}td.d{color:var(--muted);font-size:.85rem}
-td.a{text-align:right}td.a button{padding:6px 10px;margin-left:4px}
-.empty{text-align:center;color:var(--muted);padding:24px}
-.userbar{margin-top:8px;color:var(--muted);font-size:.9rem}.userbar b{color:var(--yellow)}
-#login{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;padding:16px;z-index:30}#login.on{display:flex}
-#lErr{color:var(--danger);min-height:1.2em;font-size:.9rem;margin:0 0 8px}
-#modal{position:fixed;inset:0;background:rgba(5,6,16,.75);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
-#modal.on{display:flex}
-.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;width:100%;max-width:360px}
-.box h3{margin:0 0 8px}.box p{margin:0 0 12px;color:var(--muted)}
-.box input{width:100%;font:inherit;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);margin-bottom:12px}
-.box .row{margin:0;justify-content:flex-end}
 </style>
 </head>
 <body>
-<main>
-<header><h1>FORTNITE CHEST TRACKER</h1><p>Controle de baús por partida</p><div class="userbar">👤 <b id="who"></b> · <button class="ghost" id="btnOut">Sair</button></div></header>
-
-<section class="stats">
-<div class="card stat"><span>📦 Total de baús</span><b id="sTotal">0</b></div>
-<div class="card stat"><span>🎮 Partidas</span><b id="sCount">0</b></div>
-<div class="card stat"><span>📊 Média</span><b id="sAvg">0</b></div>
-</section>
-
-<section class="card counter">
-<h2 id="cTitle">Partida 1</h2>
-<div id="big">0</div>
-<div class="row">
-<button class="inc" data-add="1">+1</button>
-<button class="inc" data-add="5">+5</button>
-<button class="inc" data-add="10">+10</button>
+<div id="app">
+  <div class="top"><h1>CHEST TRACKER</h1><div class="who">👤 <b id="who"></b> <button class="small" id="btnOut">Sair</button></div></div>
+  <div class="stats">
+    <div class="stat"><span>Total acumulado</span><b id="sTotal">0</b></div>
+    <div class="stat"><span>Partidas</span><b id="sCount">0</b></div>
+    <div class="stat"><span>Média</span><b id="sAvg">0</b></div>
+  </div>
+  <div class="now"><small id="cTitle">Partida 1</small><div id="cur">0</div><div id="timer">00:00</div></div>
+  <button id="add">+ ADICIONAR BAÚ</button>
+  <div class="aux">
+    <button id="m1">−1</button><button id="p5">+5</button><button id="undo">↶ Desfazer</button><button id="zero" class="danger">Zerar</button>
+  </div>
+  <div class="foot"><button id="fin">✔ FINALIZAR PARTIDA</button><button id="openHist">📜 Histórico</button></div>
 </div>
-<div class="row manual">
-<input id="manual" type="number" inputmode="numeric" min="1" step="1" placeholder="Quantidade">
-<button id="btnManual">Adicionar</button>
-<button class="ghost" id="btnUndo">−1</button>
-<button class="ghost" id="btnReset">Zerar contagem</button>
-</div>
-<button class="primary" id="btnFinish">✔ Finalizar partida</button>
-</section>
 
-<div class="hist-head"><h2>📜 Histórico</h2><button class="ghost danger" id="btnClear">Zerar histórico</button></div>
-<section class="card wrap">
-<table>
-<thead><tr><th>Partida</th><th>Baús encontrados</th><th>Data e horário</th><th>Total acumulado</th><th></th></tr></thead>
-<tbody id="tbody"></tbody>
-</table>
-</section>
-</main>
+<div id="hist" class="ovl"><div class="sheet">
+  <header><h2>📜 Histórico</h2><button class="small" id="closeHist">✕ Fechar</button></header>
+  <div id="list"></div>
+  <div class="tools">
+    <textarea id="bk" placeholder="Backup (JSON): use Exportar para copiar ou cole aqui e toque em Importar"></textarea>
+    <div class="row"><button id="exp">Exportar</button><button id="imp">Importar</button><button id="clr" class="danger">Zerar histórico</button></div>
+  </div>
+</div></div>
 
-<div id="login" class="on"><div class="box"><h3>🎮 Entrar</h3><p>Digite um nome e uma senha. Se o nome ainda não existir, a conta é criada automaticamente. Os dados ficam salvos neste aparelho.</p><input id="lName" type="text" placeholder="Nome" autocomplete="username"><input id="lPass" type="password" placeholder="Senha (mín. 4 caracteres)" autocomplete="current-password"><div id="lErr"></div><button id="lGo" class="primary" style="margin:0">Entrar / Criar conta</button></div></div>
-<div id="modal"><div class="box"><h3 id="mTitle"></h3><p id="mText"></p><input id="mInput" type="number" min="0" step="1"><div class="row"><button id="mCancel">Cancelar</button><button id="mOk" class="inc" style="flex:0 0 auto;padding:10px 18px;font-size:1rem">Confirmar</button></div></div></div>
+<div id="login" class="ovl on"><div class="box"><h3>🎮 Entrar</h3><p>Digite um nome e uma senha. Se o nome não existir, a conta é criada. Os dados ficam salvos neste aparelho.</p><input id="lName" type="text" placeholder="Nome" autocomplete="username"><input id="lPass" type="password" placeholder="Senha (mín. 4 caracteres)" autocomplete="current-password"><div id="lErr"></div><button id="lGo" class="go">Entrar / Criar conta</button></div></div>
+
+<div id="modal" class="ovl"><div class="box"><h3 id="mTitle"></h3><p id="mText"></p><input id="mInput" type="number" min="0" step="1"><div class="row"><button id="mCancel">Cancelar</button><button id="mOk" class="go" style="width:auto">Confirmar</button></div></div></div>
 
 <script>
 const OLD_KEY = "fortnite-chest-tracker-v1";
-let state = { matches: [], current: 0 };
-let user = null;
-function readJSON(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
-function clean(p) {
-  return p && Array.isArray(p.matches)
-    ? { matches: p.matches.filter(m => m && Number.isFinite(m.chests)), current: Number.isFinite(p.current) ? p.current : 0 }
-    : null;
-}
 const dataKey = n => "fct-data:" + n;
-
 const $ = id => document.getElementById(id);
-function save() { if (!user) return; try { localStorage.setItem(dataKey(user), JSON.stringify(state)); } catch (e) {} }
-function fmtDate(ts) {
-  return new Date(ts).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
-}
-function toInt(v) { const n = Math.floor(Number(v)); return Number.isFinite(n) ? n : NaN; }
+let state = { matches: [], current: 0, startedAt: null };
+let user = null, undoStack = [], busy = false;
 
-function render() {
-  const total = state.matches.reduce((s, m) => s + m.chests, 0);
-  const n = state.matches.length;
+function readJSON(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
+function rid() { return "m" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function cleanMatches(arr) {
+  return (Array.isArray(arr) ? arr : []).filter(m => m && Number.isFinite(m.chests) && m.chests >= 0).map(m => ({
+    id: m.id || rid(), chests: Math.floor(m.chests),
+    ts: Number.isFinite(m.ts) ? m.ts : Date.now(), dur: Number.isFinite(m.dur) ? m.dur : null }));
+}
+function clean(p) {
+  if (!p || !Array.isArray(p.matches)) return null;
+  return { matches: cleanMatches(p.matches),
+    current: Number.isFinite(p.current) && p.current > 0 ? Math.floor(p.current) : 0,
+    startedAt: Number.isFinite(p.startedAt) ? p.startedAt : null };
+}
+function save() { if (!user) return; try { localStorage.setItem(dataKey(user), JSON.stringify(state)); } catch (e) {} }
+const fmtDate = ts => new Date(ts).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" });
+function fmtDur(ms) {
+  const s = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
+  const p = n => String(n).padStart(2, "0");
+  return h ? h + ":" + p(m) + ":" + p(x) : p(m) + ":" + p(x);
+}
+const toInt = v => { const n = Math.floor(Number(v)); return Number.isFinite(n) ? n : NaN; };
+function buzz() { try { navigator.vibrate && navigator.vibrate(8); } catch (e) {} }
+
+function tick() { $("timer").textContent = state.startedAt ? "⏱ " + fmtDur(Date.now() - state.startedAt) : "⏱ 00:00"; }
+function renderMain() {
+  const total = state.matches.reduce((s, m) => s + m.chests, 0), n = state.matches.length;
   $("sTotal").textContent = total;
   $("sCount").textContent = n;
   $("sAvg").textContent = n ? (total / n).toFixed(1).replace(".", ",") : "0";
-  $("cTitle").textContent = "Partida " + (n + 1);
-  $("big").textContent = state.current;
-  const tb = $("tbody");
-  tb.innerHTML = "";
-  if (!n) {
-    tb.innerHTML = '<tr><td colspan="5" class="empty">Nenhuma partida registrada ainda.</td></tr>';
-    return;
-  }
-  let acc = 0;
-  state.matches.forEach((m, i) => {
-    acc += m.chests;
-    const tr = document.createElement("tr");
-    tr.innerHTML = '<td class="n">#' + (i + 1) + '</td><td>' + m.chests + '</td><td class="d">' + fmtDate(m.ts) +
-      '</td><td class="t">' + acc + '</td><td class="a"><button data-edit="' + i + '" title="Editar">✏️</button><button data-del="' + i + '" title="Excluir">🗑️</button></td>';
-    tb.appendChild(tr);
-  });
+  $("cTitle").textContent = "Partida " + (n + 1) + " · em andamento";
+  $("cur").textContent = state.current;
+  tick();
 }
+function renderHist() {
+  const list = $("list");
+  if (!state.matches.length) { list.innerHTML = '<div class="empty">Nenhuma partida registrada ainda.</div>'; return; }
+  let acc = 0;
+  const rows = state.matches.map((m, i) => { acc += m.chests; return { m, n: i + 1, acc }; }).reverse();
+  list.innerHTML = rows.map(r => '<div class="item"><div class="n">#' + r.n + '</div><div class="c"><b>' + r.m.chests +
+    ' baús</b><div>' + fmtDate(r.m.ts) + (r.m.dur != null ? ' · ⏱ ' + fmtDur(r.m.dur) : '') + ' · acum. ' + r.acc +
+    '</div></div><button data-edit="' + r.m.id + '">✏️</button><button data-del="' + r.m.id + '">🗑️</button></div>').join("");
+}
+function render() { renderMain(); renderHist(); }
 
-function setCurrent(v) { state.current = Math.max(0, v); save(); render(); }
+// Contagem (um único evento click por toque)
+function change(fn) {
+  undoStack.push({ current: state.current, startedAt: state.startedAt });
+  if (undoStack.length > 50) undoStack.shift();
+  fn();
+  save(); $("cur").textContent = state.current; tick();
+}
+function bump(n) {
+  change(() => { state.current = Math.max(0, state.current + n); if (n > 0 && !state.startedAt) state.startedAt = Date.now(); });
+  buzz();
+}
+$("add").onclick = () => bump(1);
+$("p5").onclick = () => bump(5);
+$("m1").onclick = () => { if (state.current > 0) bump(-1); };
+$("undo").onclick = () => {
+  const u = undoStack.pop(); if (!u) return;
+  state.current = u.current; state.startedAt = u.startedAt; save(); $("cur").textContent = state.current; tick();
+};
+setInterval(tick, 1000);
 
-// Modal de confirmação / entrada
+// Diálogo
 let resolver = null;
 function ask({ title, text, input = false, value = "" }) {
   return new Promise(res => {
     resolver = res;
     $("mTitle").textContent = title;
-    $("mText").textContent = text || "";
-    $("mText").style.display = text ? "" : "none";
-    const inp = $("mInput");
-    inp.style.display = input ? "" : "none";
-    inp.value = value;
+    $("mText").textContent = text || ""; $("mText").style.display = text ? "" : "none";
+    const inp = $("mInput"); inp.style.display = input ? "" : "none"; inp.value = value;
     $("modal").classList.add("on");
-    if (input) { inp.focus(); inp.select(); } else $("mOk").focus();
+    if (input) { inp.focus(); inp.select(); }
   });
 }
-function closeModal(result) {
-  $("modal").classList.remove("on");
-  if (resolver) { const r = resolver; resolver = null; r(result); }
-}
+function closeModal(r) { $("modal").classList.remove("on"); if (resolver) { const f = resolver; resolver = null; f(r); } }
 $("mCancel").onclick = () => closeModal(null);
 $("mOk").onclick = () => closeModal($("mInput").style.display === "none" ? true : $("mInput").value);
-$("modal").addEventListener("keydown", e => {
-  if (e.key === "Enter") $("mOk").click();
-  if (e.key === "Escape") $("mCancel").click();
-});
-$("modal").addEventListener("click", e => { if (e.target.id === "modal") closeModal(null); });
+$("modal").addEventListener("keydown", e => { if (e.key === "Enter") $("mOk").click(); if (e.key === "Escape") $("mCancel").click(); });
 
-document.querySelectorAll("[data-add]").forEach(b => b.onclick = () => setCurrent(state.current + Number(b.dataset.add)));
-$("btnUndo").onclick = () => setCurrent(state.current - 1);
-$("btnReset").onclick = () => setCurrent(0);
-
-function addManual() {
-  const v = toInt($("manual").value);
-  if (!(v > 0)) { $("manual").focus(); return; }
-  $("manual").value = "";
-  setCurrent(state.current + v);
-}
-$("btnManual").onclick = addManual;
-$("manual").addEventListener("keydown", e => { if (e.key === "Enter") addManual(); });
-
-$("btnFinish").onclick = async () => {
-  const n = state.matches.length + 1;
-  const ok = await ask({
-    title: "Finalizar partida " + n + "?",
-    text: "Serão salvos " + state.current + " baús no histórico."
-  });
-  if (!ok) return;
-  state.matches.push({ chests: state.current, ts: Date.now() });
-  state.current = 0;
-  save(); render();
+$("zero").onclick = async () => {
+  if (!state.current && !state.startedAt) return;
+  if (!(await ask({ title: "Zerar a partida atual?", text: "A contagem de " + state.current + " baús e o cronômetro serão reiniciados." }))) return;
+  change(() => { state.current = 0; state.startedAt = null; });
+};
+$("fin").onclick = async () => {
+  if (busy) return; busy = true;
+  try {
+    const n = state.matches.length + 1;
+    const ok = await ask({ title: "Finalizar partida " + n + "?", text: "Serão salvos " + state.current + " baús no histórico." });
+    if (!ok) return;
+    state.matches.push({ id: rid(), chests: state.current, ts: Date.now(), dur: state.startedAt ? Date.now() - state.startedAt : null });
+    state.current = 0; state.startedAt = null; undoStack = [];
+    save(); render();
+  } finally { busy = false; }
 };
 
-$("tbody").addEventListener("click", async e => {
-  const b = e.target.closest("button");
-  if (!b) return;
-  if (b.dataset.edit !== undefined) {
-    const i = Number(b.dataset.edit);
-    const r = await ask({ title: "Editar partida #" + (i + 1), text: "Nova quantidade de baús:", input: true, value: state.matches[i].chests });
-    if (r === null) return;
-    const v = toInt(r);
-    if (!(v >= 0)) return;
-    state.matches[i].chests = v;
-    save(); render();
-  } else if (b.dataset.del !== undefined) {
-    const i = Number(b.dataset.del);
-    const ok = await ask({ title: "Excluir partida #" + (i + 1) + "?", text: "Os totais acumulados serão recalculados." });
-    if (!ok) return;
-    state.matches.splice(i, 1);
-    save(); render();
+// Histórico
+$("openHist").onclick = () => { renderHist(); $("hist").classList.add("on"); };
+$("closeHist").onclick = () => $("hist").classList.remove("on");
+$("list").addEventListener("click", async e => {
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.edit) {
+    const m = state.matches.find(x => x.id === b.dataset.edit); if (!m) return;
+    const r = await ask({ title: "Editar partida", text: "Nova quantidade de baús:", input: true, value: m.chests });
+    const v = toInt(r); if (r === null || !(v >= 0)) return;
+    m.chests = v; save(); render();
+  } else if (b.dataset.del) {
+    if (!(await ask({ title: "Excluir esta partida?", text: "Os totais serão recalculados." }))) return;
+    state.matches = state.matches.filter(x => x.id !== b.dataset.del); save(); render();
   }
 });
-
-$("btnClear").onclick = async () => {
-  if (!state.matches.length && !state.current) return;
-  const ok = await ask({ title: "Zerar todo o histórico?", text: "Todas as partidas serão apagadas. Esta ação não pode ser desfeita." });
-  if (!ok) return;
-  state = { matches: [], current: 0 };
-  save(); render();
+$("clr").onclick = async () => {
+  if (!state.matches.length) return;
+  if (!(await ask({ title: "Zerar todo o histórico?", text: "Todas as partidas serão apagadas. Não dá para desfazer." }))) return;
+  state.matches = []; save(); render();
+};
+$("exp").onclick = async () => {
+  const t = JSON.stringify({ app: "fortnite-chest-tracker", version: 2, matches: state.matches });
+  $("bk").value = t; $("bk").select();
+  try { await navigator.clipboard.writeText(t); } catch (e) {}
+};
+$("imp").onclick = async () => {
+  let p; try { p = JSON.parse($("bk").value); } catch (e) { await ask({ title: "JSON inválido", text: "Cole um backup exportado por este app." }); return; }
+  const incoming = cleanMatches(Array.isArray(p) ? p : p && p.matches);
+  const have = new Set(state.matches.map(m => m.id + "|" + m.ts));
+  const add = incoming.filter(m => !have.has(m.id + "|" + m.ts) && !state.matches.some(x => x.ts === m.ts && x.chests === m.chests));
+  state.matches = state.matches.concat(add).sort((a, b) => a.ts - b.ts);
+  save(); render(); $("bk").value = "";
+  await ask({ title: "Importação concluída", text: add.length + " partida(s) adicionada(s)." });
 };
 
-// Login local (contas guardadas neste aparelho)
+// Login local
 async function hash(pw, salt) {
   const t = salt + ":" + pw;
   try {
     const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t));
     return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, "0")).join("");
-  } catch (e) {
-    let h = 5381; for (const c of t) h = ((h << 5) + h + c.charCodeAt(0)) >>> 0; return "x" + h;
-  }
+  } catch (e) { let h = 5381; for (const c of t) h = ((h << 5) + h + c.charCodeAt(0)) >>> 0; return "x" + h; }
 }
 function startSession(id, users) {
-  user = id;
-  state = clean(readJSON(dataKey(id))) || { matches: [], current: 0 };
+  user = id; undoStack = [];
+  state = clean(readJSON(dataKey(id))) || { matches: [], current: 0, startedAt: null };
   try { localStorage.setItem("fct-session", id); } catch (e) {}
   $("who").textContent = users[id].name;
-  $("login").classList.remove("on");
-  render();
+  $("login").classList.remove("on"); render();
 }
 async function doLogin() {
   const name = $("lName").value.trim(), pw = $("lPass").value, err = $("lErr");
   err.textContent = "";
   if (name.length < 2 || pw.length < 4) { err.textContent = "Nome (mín. 2) e senha (mín. 4 caracteres)."; return; }
-  const id = name.toLowerCase();
-  const users = readJSON("fct-users") || {};
+  const id = name.toLowerCase(), users = readJSON("fct-users") || {};
   if (users[id]) {
     if (users[id].hash !== await hash(pw, users[id].salt)) { err.textContent = "Senha incorreta."; return; }
   } else {
-    const salt = Math.random().toString(36).slice(2) + Date.now().toString(36);
-    const first = Object.keys(users).length === 0;
+    const salt = Math.random().toString(36).slice(2) + Date.now().toString(36), first = Object.keys(users).length === 0;
     users[id] = { name, salt, hash: await hash(pw, salt) };
     try {
       localStorage.setItem("fct-users", JSON.stringify(users));
@@ -250,16 +259,15 @@ async function doLogin() {
       if (first && clean(old) && !localStorage.getItem(dataKey(id))) localStorage.setItem(dataKey(id), JSON.stringify(old));
     } catch (e) {}
   }
-  $("lPass").value = "";
-  startSession(id, users);
+  $("lPass").value = ""; startSession(id, users);
 }
 $("lGo").onclick = doLogin;
 $("lPass").addEventListener("keydown", e => { if (e.key === "Enter") doLogin(); });
 $("lName").addEventListener("keydown", e => { if (e.key === "Enter") $("lPass").focus(); });
 $("btnOut").onclick = () => {
   try { localStorage.removeItem("fct-session"); } catch (e) {}
-  user = null; state = { matches: [], current: 0 }; render();
-  $("lName").value = ""; $("lPass").value = ""; $("login").classList.add("on");
+  user = null; state = { matches: [], current: 0, startedAt: null }; undoStack = []; render();
+  $("hist").classList.remove("on"); $("lName").value = ""; $("lPass").value = ""; $("login").classList.add("on");
 };
 (function boot() {
   const users = readJSON("fct-users") || {};
