@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#141318">
+<title>Rastreador de Baús</title>
+<style>
+:root{--bg:#141318;--surface:#1d1b23;--surface2:#26232e;--line:#34303f;--text:#f3eee2;--muted:#a49d8f;--gold:#f2b84b;--gold2:#c98a1d;--parch:#e9d9b0;--parch-ink:#3a2a12;--danger:#e0624f;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(20,19,24,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 16px;display:flex;align-items:center;gap:10px}
+header h1{font-size:17px;margin:0;font-weight:800;letter-spacing:.2px}
+header h1 span{color:var(--gold)}
+main{max-width:520px;margin:0 auto;padding:16px 16px 40px}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--gold);font-weight:700}
+h2{font-size:28px;line-height:1.15;margin:6px 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 18px}
+.parch{background:linear-gradient(160deg,#efe0b8,#dcc891);color:var(--parch-ink);border-radius:18px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.45),inset 0 0 40px rgba(120,80,20,.25);border:1px solid #b99a55;text-align:center}
+.parch .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.14em;font-weight:700;opacity:.75}
+.count{font-size:84px;font-weight:900;line-height:1;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+.count.pop{animation:pop .25s ease}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.14)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.count.pop{animation:none}}
+.chest{width:92px;height:auto;margin:0 auto 4px;display:block}
+.row{display:flex;gap:10px;margin-top:14px}
+button{font:inherit;cursor:pointer;border:0;border-radius:14px;padding:14px;font-weight:800;min-height:52px;color:var(--text);background:var(--surface2);border:1px solid var(--line)}
+button:active{transform:scale(.97)}
+button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.primary{flex:2;background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a1a02;border:0;font-size:18px}
+.row button:not(.primary){flex:1}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.stat b{display:block;font-size:24px;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted)}
+h3{font-size:16px;margin:22px 0 10px;display:flex;justify-content:space-between;align-items:center}
+h3 small{color:var(--muted);font-weight:500}
+ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+li{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px}
+li .dot{width:8px;height:8px;border-radius:50%;background:var(--gold)}
+li .t{flex:1}
+li .t small{display:block;color:var(--muted);font-size:12px}
+li button{min-height:36px;padding:6px 10px;font-size:13px;font-weight:600;color:var(--muted)}
+.empty{color:var(--muted);text-align:center;padding:18px;border:1px dashed var(--line);border-radius:12px;font-size:14px}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:22px;gap:10px}
+.foot p{color:var(--muted);font-size:12px;margin:0}
+.danger{color:var(--danger);min-height:40px;padding:8px 14px;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+  <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="24" width="52" height="30" rx="5" fill="#c98a1d"/><path d="M6 30a26 20 0 0 1 52 0z" fill="#f2b84b"/><rect x="28" y="30" width="8" height="12" rx="2" fill="#3a2a12"/></svg>
+  <h1>Rastreador de <span>Baús</span></h1>
+</header>
+<main>
+  <div class="eyebrow">Caça ao Tesouro</div>
+  <h2>Conte cada baú.</h2>
+  <p class="sub">Salvo neste aparelho. Não precisa de conta.</p>
+
+  <section class="parch" aria-label="Contador de baús">
+    <svg class="chest" viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="26" width="52" height="28" rx="5" fill="#8a5a14"/><path d="M6 32a26 20 0 0 1 52 0z" fill="#b57a1c"/><rect x="6" y="38" width="52" height="5" fill="#3a2a12" opacity=".5"/><rect x="28" y="32" width="8" height="13" rx="2" fill="#f2b84b" stroke="#3a2a12" stroke-width="2"/></svg>
+    <div class="lbl">Baús abertos</div>
+    <div class="count" id="count" aria-live="polite">0</div>
+    <div class="lbl" id="timer">Tempo 00:00</div>
+    <div class="row">
+      <button id="minus" aria-label="Remover um baú">−1</button>
+      <button id="plus" class="primary">+1 baú</button>
+      <button id="plus5" aria-label="Adicionar cinco baús">+5</button>
+    </div>
+    <div class="row"><button id="finish">Finalizar partida</button></div>
+  </section>
+
+  <div class="stats">
+    <div class="stat"><b id="total">0</b><span>Total acumulado</span></div>
+    <div class="stat"><b id="avg">0</b><span>Média por partida</span></div>
+  </div>
+
+  <h3>Histórico <small id="hint"></small></h3>
+  <ul id="log"></ul>
+
+  <div class="foot">
+    <p>Seus dados ficam só neste navegador.</p>
+    <button class="danger" id="reset">Zerar histórico</button>
+  </div>
+</main>
+
+<script>
+(function(){
+  var KEY="rastreador-baus-v1", KEY2="rastreador-baus-partidas-v1", log=[], st={cur:1,start:null,matches:[]}, tm=null;
+  var $=function(id){return document.getElementById(id)};
+  function load(){try{var r=localStorage.getItem(KEY);if(r){var d=JSON.parse(r);if(Array.isArray(d))log=d.filter(function(e){return e&&typeof e.t==="number"&&typeof e.n==="number"})}}catch(e){}}
+  function loadMatches(){try{var r=localStorage.getItem(KEY2);if(r){var s=JSON.parse(r);if(s&&Array.isArray(s.matches)){st.matches=s.matches.filter(function(m){return m&&typeof m.id==="number"});st.cur=typeof s.cur==="number"?s.cur:1;st.start=typeof s.start==="number"?s.start:null}}}catch(e){}
+    st.matches.forEach(function(m){if(m.id>=st.cur)st.cur=m.id+1});
+    log.forEach(function(e){if(typeof e.m!=="number")e.m=st.cur})}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(log));localStorage.setItem(KEY2,JSON.stringify(st))}catch(e){}}
+  function curSum(){return log.reduce(function(a,e){return e.m===st.cur?a+e.n:a},0)}
+  function pad(n){return n<10?"0"+n:""+n}
+  function elapsed(){return st.start?Math.max(0,Math.floor((Date.now()-st.start)/1000)):0}
+  function fmtT(s){return pad(Math.floor(s/60))+":"+pad(s%60)}
+  function fmtDur(s){if(s<60)return s+(s===1?" segundo":" segundos");var m=Math.round(s/60);return m+(m===1?" minuto":" minutos")}
+  function tick(){$("timer").textContent="Tempo "+fmtT(elapsed())}
+  function runTimer(){if(tm){clearInterval(tm);tm=null}tick();if(st.start)tm=setInterval(tick,250)}
+  function startOfDay(ts){var d=new Date(ts);d.setHours(0,0,0,0);return d.getTime()}
+  function sum(from){return log.reduce(function(a,e){return e.t>=from?a+e.n:a},0)}
+  function fmt(ts){var d=new Date(ts),h=startOfDay(Date.now())-startOfDay(ts);
+    var hm=d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+    if(h===0)return "Hoje, "+hm; if(h===86400000)return "Ontem, "+hm;
+    return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"short"})+", "+hm}
+  function render(pop){
+    var tot=st.matches.reduce(function(a,m){return a+(m.baus||0)},0), nm=st.matches.length;
+    var c=$("count"); c.textContent=curSum();
+    if(pop){c.classList.remove("pop");void c.offsetWidth;c.classList.add("pop")}
+    $("total").textContent=tot;
+    $("avg").textContent=nm?(tot/nm).toFixed(1).replace(".",","):"0";
+    var ul=$("log"); ul.innerHTML="";
+    if(!st.matches.length){var e=document.createElement("div");e.className="empty";e.textContent="Nenhuma partida finalizada ainda.";ul.appendChild(e);$("hint").textContent="";return}
+    $("hint").textContent="últimas "+Math.min(st.matches.length,15);
+    st.matches.slice().reverse().slice(0,15).forEach(function(mt){
+      var li=document.createElement("li");
+      li.innerHTML='<span class="dot"></span><span class="t"></span>';
+      var t=li.querySelector(".t");
+      t.textContent="Partida "+mt.id+" — "+fmtDur(mt.dur||0)+" — "+mt.baus+(mt.baus===1?" baú aberto":" baús abertos");
+      var s=document.createElement("small");s.textContent=fmt(mt.fim);t.appendChild(s);
+      var b=document.createElement("button");b.textContent="Excluir";b.setAttribute("aria-label","Excluir esta partida");
+      b.onclick=function(){st.matches=st.matches.filter(function(x){return x!==mt});log=log.filter(function(e){return e.m!==mt.id});save();render(false)};
+      li.appendChild(b);ul.appendChild(li)});
+  }
+  function add(n){
+    if(n<0&&curSum()<=0)return;
+    if(n>0&&st.start===null){st.start=Date.now()+1000;runTimer()}
+    log.push({t:Date.now(),n:n,m:st.cur});save();render(true);
+    if(navigator.vibrate){try{navigator.vibrate(15)}catch(e){}}
+  }
+  $("plus").onclick=function(){add(1)};
+  $("plus5").onclick=function(){add(5)};
+  $("minus").onclick=function(){add(-1)};
+  var rt=null,rb=$("reset"),rl=rb.textContent;
+  rb.onclick=function(){
+    if(!rt){rb.textContent="Confirmar exclusão";rt=setTimeout(function(){rt=null;rb.textContent=rl},4000);return}
+    clearTimeout(rt);rt=null;rb.textContent=rl;
+    log=[];st={cur:1,start:null,matches:[]};
+    try{localStorage.removeItem(KEY);localStorage.removeItem(KEY2)}catch(e){}
+    runTimer();render(false);
+  };
+  $("finish").onclick=function(){
+    var b=curSum();
+    if(!b&&st.start===null)return;
+    st.matches.push({id:st.cur,dur:elapsed(),baus:b,fim:Date.now()});
+    st.cur++;st.start=null;save();runTimer();render(false);
+  };
+  load();loadMatches();runTimer();render(false);
+})();
+</script>
+</body>
+</html>
